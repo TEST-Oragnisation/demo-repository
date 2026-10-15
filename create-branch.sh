@@ -81,22 +81,34 @@ fi
 
 BRANCH="$TYPE/$TICKET-$DESCRIPTION"
 
-if git -C "$REPO_ROOT" show-ref --verify --quiet "refs/heads/$BRANCH"; then
-    echo "Local branch already exists: $BRANCH" >&2
-    exit 1
-fi
-
 if ! git check-ref-format --branch "$BRANCH" >/dev/null; then
     echo "Generated branch name is not a valid Git branch name: $BRANCH" >&2
     exit 2
 fi
 
-if ! remote_branch="$(git -C "$REPO_ROOT" ls-remote --heads origin "refs/heads/$BRANCH")"; then
-    echo "Could not check whether origin/$BRANCH already exists." >&2
+if ! remote_branches="$(git -C "$REPO_ROOT" ls-remote --heads origin)"; then
+    echo "Could not check branches on origin; refusing to create a possibly duplicate branch." >&2
     exit 1
 fi
-if [[ -n "$remote_branch" ]]; then
-    echo "Remote branch already exists: origin/$BRANCH" >&2
+
+local_ticket_branch="$(
+    git -C "$REPO_ROOT" for-each-ref --format='%(refname:short)' refs/heads |
+        grep -E "^[^/]+/${TICKET}-" || true
+)"
+remote_ticket_branch="$(
+    printf '%s\n' "$remote_branches" |
+        awk '{ sub("refs/heads/", "", $2); print $2 }' |
+        grep -E "^[^/]+/${TICKET}-" || true
+)"
+
+if [[ -n "$local_ticket_branch" || -n "$remote_ticket_branch" ]]; then
+    echo "Ticket ID $TICKET is already used by an existing branch; refusing to create another branch for this ticket." >&2
+    if [[ -n "$local_ticket_branch" ]]; then
+        printf 'Local branch(es):\n%s\n' "$local_ticket_branch" >&2
+    fi
+    if [[ -n "$remote_ticket_branch" ]]; then
+        printf 'Remote branch(es):\n%s\n' "$remote_ticket_branch" >&2
+    fi
     exit 1
 fi
 

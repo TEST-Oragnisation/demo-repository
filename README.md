@@ -19,6 +19,8 @@ as their base and pull requests target
 `refactor`, `docs`, and `spike`. Hotfix branches start from `main`, the
 production branch, and their pull requests target `main`. After a hotfix is
 merged and verified on `main`, forward-port it to `develop` if needed.
+Ticket IDs may only be used by one branch in this repository; the script checks
+both local and remote branches before creating one.
 
 Pull requests are checked for the branch-name format and the expected target;
 make the `Validate branch name` check required in branch protection settings
