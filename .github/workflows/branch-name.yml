@@ -8,10 +8,10 @@ permissions:
 
 jobs:
   validate:
-    name: Validate branch name
+    name: Branch naming convention
     runs-on: ubuntu-latest
     steps:
-      - name: Check branch name and hotfix target
+      - name: Validate branch name and PR target
         env:
           BRANCH_NAME: ${{ github.head_ref }}
           BASE_BRANCH: ${{ github.base_ref }}
@@ -24,10 +24,10 @@ jobs:
 
           if [[ "$BRANCH_NAME" == hotfix/* ]]; then
             if [[ "$BASE_BRANCH" != "main" ]]; then
-              echo "::error::Hotfix branches must target the production branch 'main'."
+              echo "::error::Hotfix branches must target the production branch 'main', not '$BASE_BRANCH'."
               exit 1
             fi
           elif [[ "$BASE_BRANCH" != "develop" ]]; then
-            echo "::error::Development branches must target 'develop'."
+            echo "::error::Development branches must target 'develop', not '$BASE_BRANCH'."
             exit 1
           fi
