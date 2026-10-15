@@ -19,6 +19,8 @@ as their base and pull requests target
 `refactor`, `docs`, and `spike`. Hotfix branches start from `main`, the
 production branch, and their pull requests target `main`. After a hotfix is
 merged and verified on `main`, forward-port it to `develop` if needed.
+Descriptions may contain uppercase or lowercase letters and numbers, separated
+by single hyphens; spaces, underscores, and consecutive hyphens are not allowed.
 Ticket IDs may only be used by one branch in this repository; the script checks
 both local and remote branches before creating one.
 

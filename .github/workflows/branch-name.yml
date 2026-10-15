@@ -16,8 +16,8 @@ jobs:
           BRANCH_NAME: ${{ github.head_ref }}
           BASE_BRANCH: ${{ github.base_ref }}
         run: |
-          if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix|hotfix|chore|refactor|docs|spike)/[0-9]+-[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
-            echo "::error::Invalid branch name '$BRANCH_NAME'. Expected <type>/<numeric-ticket-id>-<lowercase-description>."
+          if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix|hotfix|chore|refactor|docs|spike)/[0-9]+-[A-Za-z0-9]+(-[A-Za-z0-9]+)*$ ]]; then
+            echo "::error::Invalid branch name '$BRANCH_NAME'. Expected <type>/<numeric-ticket-id>-<description> (letters, numbers, and hyphens)."
             echo "::error::Allowed types: feature, bugfix, hotfix, chore, refactor, docs, spike."
             exit 1
           fi
