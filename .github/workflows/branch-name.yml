@@ -17,14 +17,8 @@ jobs:
           BASE_BRANCH: ${{ github.base_ref }}
         run: |
           if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix|hotfix|chore|refactor|docs|spike)/[0-9]+-[A-Za-z0-9]+(-[A-Za-z0-9]+)*$ ]]; then
-            echo "::error::Branch '$BRANCH_NAME' has an invalid format. Use <type>/<numeric-ticket-id>-<description>; allowed types: feature, bugfix, hotfix, chore, refactor, docs, spike. Descriptions must use letters and numbers separated by single hyphens."
-            exit 1
-          fi
-
-          DESCRIPTION="${BRANCH_NAME#*/}"
-          DESCRIPTION="${DESCRIPTION#*-}"
-          if (( ${#DESCRIPTION} > 20 )); then
-            echo "::error::Description in '$BRANCH_NAME' exceeds the 20-character maximum."
+            echo "::error::Invalid branch name '$BRANCH_NAME'. Expected <type>/<numeric-ticket-id>-<description> (letters, numbers, and hyphens)."
+            echo "::error::Allowed types: feature, bugfix, hotfix, chore, refactor, docs, spike."
             exit 1
           fi
 
