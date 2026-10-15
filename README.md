@@ -9,11 +9,12 @@ Create branches with `create-branch.sh`. Branch names use
 `<type>/<numeric-ticket-id>-<short-description>`:
 
 ```bash
-./create-branch.sh feature 142 po-approval-workflow
-./create-branch.sh hotfix 301 payment-advice-rounding
+./create-branch.sh feature 142 po-approval-workflow --base develop
+./create-branch.sh hotfix 301 payment-advice-rounding --base main
 ```
 
-Development branches use `develop` as their base and pull requests target
+The `--base <branch>` argument is required. Development branches use `develop`
+as their base and pull requests target
 `develop`. Supported types are `feature`, `bugfix`, `hotfix`, `chore`,
 `refactor`, `docs`, and `spike`. Hotfix branches start from `main`, the
 production branch, and their pull requests target `main`. After a hotfix is

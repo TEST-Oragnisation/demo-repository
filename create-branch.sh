@@ -5,23 +5,29 @@ set -euo pipefail
 usage() {
     cat <<'EOF'
 Usage:
-  ./create-branch.sh <type> <ticket-id> <short-description> [--base <branch>]
+  ./create-branch.sh <type> <ticket-id> <short-description> --base <branch>
 
 Types:
   feature | bugfix | hotfix | chore | refactor | docs | spike
 
 Base rules for this repository:
-  Default: develop
   feature, bugfix, chore, refactor, docs, spike: develop
   hotfix: main (production)
 
 Examples:
-  ./create-branch.sh feature 142 po-approval-workflow
+  ./create-branch.sh feature 142 po-approval-workflow --base develop
   ./create-branch.sh hotfix 301 payment-advice-rounding --base main
 EOF
 }
 
-if [[ $# -ne 3 && $# -ne 5 ]] || { [[ $# -eq 5 ]] && [[ "$4" != "--base" ]]; }; then
+if [[ $# -ne 5 ]]; then
+    echo "WARNING: --base is required; no branch was created." >&2
+    usage >&2
+    exit 2
+fi
+
+if [[ "$4" != "--base" || -z "$5" ]]; then
+    echo "Invalid base argument: use --base <branch>; no branch was created." >&2
     usage >&2
     exit 2
 fi
@@ -29,10 +35,7 @@ fi
 TYPE="$1"
 TICKET="$2"
 DESCRIPTION="$3"
-BASE="develop"
-if [[ $# -eq 5 ]]; then
-    BASE="$5"
-fi
+BASE="$5"
 
 if [[ ! "$TYPE" =~ ^(feature|bugfix|hotfix|chore|refactor|docs|spike)$ ]]; then
     echo "Invalid type: $TYPE" >&2
