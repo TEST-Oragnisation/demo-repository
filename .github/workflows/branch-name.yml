@@ -1,0 +1,33 @@
+name: Branch Name
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate branch name
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name and hotfix target
+        env:
+          BRANCH_NAME: ${{ github.head_ref }}
+          BASE_BRANCH: ${{ github.base_ref }}
+        run: |
+          if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix|hotfix|chore|refactor|docs|spike)/[0-9]+-[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
+            echo "::error::Invalid branch name '$BRANCH_NAME'. Expected <type>/<numeric-ticket-id>-<lowercase-description>."
+            echo "::error::Allowed types: feature, bugfix, hotfix, chore, refactor, docs, spike."
+            exit 1
+          fi
+
+          if [[ "$BRANCH_NAME" == hotfix/* ]]; then
+            if [[ "$BASE_BRANCH" != "main" ]]; then
+              echo "::error::Hotfix branches must target the production branch 'main'."
+              exit 1
+            fi
+          elif [[ "$BASE_BRANCH" != "develop" ]]; then
+            echo "::error::Development branches must target 'develop'."
+            exit 1
+          fi
