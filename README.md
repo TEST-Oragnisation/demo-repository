@@ -1,3 +1,7 @@
+![Auto Assign](https://github.com/TEST-Oragnisation/demo-repository/actions/workflows/auto-assign.yml/badge.svg)
+
+![Proof HTML](https://github.com/TEST-Oragnisation/demo-repository/actions/workflows/proof-html.yml/badge.svg)
+
 # Welcome to your organization's demo respository
 This code repository (or "repo") is designed to demonstrate the best GitHub has to offer with the least amount of noise.
 
@@ -9,12 +13,15 @@ Create branches with `create-branch.sh`. Branch names use
 `<type>/<numeric-ticket-id>-<short-description>`:
 
 ```bash
-./create-branch.sh feature 142 po-approval-workflow --base develop
-./create-branch.sh hotfix 301 payment-advice-rounding --base main
+./create-branch.sh feature 142 po-approval-workflow
+./create-branch.sh feature 142 po-Approval-Workflow
+./create-branch.sh hotfix 301 payment-advice-rounding
 ```
 
-The `--base <branch>` argument is required. Development branches use `develop`
-as their base and pull requests target
+Descriptions may contain uppercase or lowercase letters, numbers, and
+hyphen-separated words.
+
+Development branches use `develop` as their base and pull requests target
 `develop`. Supported types are `feature`, `bugfix`, `hotfix`, `chore`,
 `refactor`, `docs`, and `spike`. Hotfix branches start from `main`, the
 production branch, and their pull requests target `main`. After a hotfix is
