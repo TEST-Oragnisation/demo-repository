@@ -19,11 +19,12 @@ as their base and pull requests target
 `refactor`, `docs`, and `spike`. Hotfix branches start from `main`, the
 production branch, and their pull requests target `main`. After a hotfix is
 merged and verified on `main`, forward-port it to `develop` if needed.
-Descriptions may contain uppercase or lowercase letters and numbers, separated
-by single hyphens; spaces, underscores, and consecutive hyphens are not allowed.
+Descriptions are required and may contain uppercase or lowercase letters and
+numbers separated by single hyphens, with a maximum length of 20 characters.
+Spaces, underscores, consecutive hyphens, and descriptions made only of special
+characters are not allowed.
 Ticket IDs may only be used by one branch in this repository; the script checks
 both local and remote branches before creating one.
 
-On pull requests, a secondary advisory check warns if the branch name or PR
-target does not follow these conventions; it does not block merging. No branch
-naming check runs on pushes.
+On pull requests, the branch-name check fails if the branch name or PR target
+does not follow these conventions. No branch naming check runs on pushes.
