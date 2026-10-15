@@ -91,6 +91,23 @@ if ! remote_branches="$(git -C "$REPO_ROOT" ls-remote --heads origin)"; then
     exit 1
 fi
 
+local_same_name="$(
+    git -C "$REPO_ROOT" for-each-ref --format='%(refname:short)' refs/heads |
+        grep -F -x -- "$BRANCH" || true
+)"
+remote_same_name="$(
+    printf '%s\n' "$remote_branches" |
+        awk '{ sub("refs/heads/", "", $2); print $2 }' |
+        grep -F -x -- "$BRANCH" || true
+)"
+
+if [[ -n "$local_same_name" || -n "$remote_same_name" ]]; then
+    echo "Branch name already exists; refusing to create duplicate '$BRANCH'." >&2
+    [[ -z "$local_same_name" ]] || echo "Local branch: $local_same_name" >&2
+    [[ -z "$remote_same_name" ]] || echo "Remote branch: origin/$remote_same_name" >&2
+    exit 1
+fi
+
 local_ticket_branch="$(
     git -C "$REPO_ROOT" for-each-ref --format='%(refname:short)' refs/heads |
         grep -E "^[^/]+/${TICKET}-" || true
