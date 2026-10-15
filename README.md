@@ -10,8 +10,12 @@ Create branches with `create-branch.sh`. Branch names use
 
 ```bash
 ./create-branch.sh feature 142 po-approval-workflow
+./create-branch.sh feature 142 po-Approval-Workflow
 ./create-branch.sh hotfix 301 payment-advice-rounding
 ```
+
+Descriptions may contain uppercase or lowercase letters, numbers, and
+hyphen-separated words.
 
 Development branches use `develop` as their base and pull requests target
 `develop`. Supported types are `feature`, `bugfix`, `hotfix`, `chore`,
