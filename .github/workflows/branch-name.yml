@@ -11,6 +11,12 @@ jobs:
     name: Branch naming convention
     runs-on: ubuntu-latest
     steps:
+      - name: Check out pull request head
+        uses: actions/checkout@v4
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/head
+          fetch-depth: 0
+
       - name: Validate branch name and PR target
         env:
           BRANCH_NAME: ${{ github.head_ref }}
@@ -41,5 +47,15 @@ jobs:
             fi
           elif [[ "$BASE_BRANCH" != "develop" ]]; then
             echo "::error::Development branches must target 'develop', not '$BASE_BRANCH'."
+            exit 1
+          fi
+
+          if ! git fetch --no-tags origin "refs/heads/${BASE_BRANCH}:refs/remotes/origin/${BASE_BRANCH}"; then
+            echo "::error::Could not fetch target branch '$BASE_BRANCH'; cannot verify the PR branch base."
+            exit 1
+          fi
+
+          if ! git merge-base --is-ancestor "origin/${BASE_BRANCH}" HEAD; then
+            echo "::error::The latest '$BASE_BRANCH' commit is not an ancestor of '$BRANCH_NAME'. Update the PR branch from '$BASE_BRANCH' and try again."
             exit 1
           fi

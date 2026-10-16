@@ -38,4 +38,6 @@ Ticket IDs may only be used by one branch in this repository; the script checks
 both local and remote branches before creating one.
 
 On pull requests, the branch-name check fails if the branch name or PR target
-does not follow these conventions. No branch naming check runs on pushes.
+does not follow these conventions, or if the PR branch does not contain the
+latest commit from its required base branch. No branch naming check runs on
+pushes.
