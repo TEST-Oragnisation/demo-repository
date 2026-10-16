@@ -53,6 +53,11 @@ if [[ ! "$DESCRIPTION" =~ ^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$ ]]; then
     exit 2
 fi
 
+if (( ${#DESCRIPTION} > 20 )); then
+    echo "Invalid description: maximum length is 20 characters." >&2
+    exit 2
+fi
+
 if [[ "$TYPE" == "hotfix" ]]; then
     if [[ "$BASE" != "main" ]]; then
         echo "Hotfix branches in this repository must use the production base 'main'." >&2

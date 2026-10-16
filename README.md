@@ -13,9 +13,9 @@ Create branches with `create-branch.sh`. Branch names use
 `<type>/<numeric-ticket-id>-<short-description>`:
 
 ```bash
-./create-branch.sh feature 142 po-approval-workflow
-./create-branch.sh feature 142 po-Approval-Workflow
-./create-branch.sh hotfix 301 payment-advice-rounding
+./create-branch.sh feature 142 po-approval-workflow --base develop
+./create-branch.sh feature 143 po-approval-workflow --base develop
+./create-branch.sh hotfix 301 payment-rounding --base main
 ```
 
 Descriptions may contain uppercase or lowercase letters, numbers, and
