@@ -16,4 +16,3 @@ jobs:
       with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           assignees: Shanmukha2806
-          numOfAssignee: 1
