@@ -16,3 +16,7 @@ jobs:
       with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           assignees: Shanmukha2806
+<<<<<<< HEAD
+=======
+          # numOfAssignee: 1
+>>>>>>> cc3296a (changed the auto-assign script)
