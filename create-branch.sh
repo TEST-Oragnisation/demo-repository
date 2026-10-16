@@ -49,12 +49,7 @@ if [[ ! "$TICKET" =~ ^[0-9]+$ ]]; then
 fi
 
 if [[ ! "$DESCRIPTION" =~ ^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$ ]]; then
-    echo "Invalid description: use letters and numbers separated by single hyphens; spaces and special characters are not allowed." >&2
-    exit 2
-fi
-
-if (( ${#DESCRIPTION} > 20 )); then
-    echo "Invalid description: maximum length is 20 characters." >&2
+    echo "Invalid description: use letters, numbers, and hyphens." >&2
     exit 2
 fi
 
