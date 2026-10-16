@@ -26,8 +26,10 @@ Development branches use `develop` as their base and pull requests target
 `refactor`, `docs`, and `spike`. Hotfix branches start from `main`, the
 production branch, and their pull requests target `main`. After a hotfix is
 merged and verified on `main`, forward-port it to `develop` if needed.
-The `develop` to `main` pull request is allowed as a promotion exception;
-all other development branches must target `develop`.
+Branch-name validation is skipped when the PR source is an existing base branch
+(`main`, `develop`, or `iith`), allowing promotions such as `develop` to `main`
+without applying feature-branch naming rules. New branches still must follow
+the naming convention and target the correct base.
 Descriptions are required and may contain uppercase or lowercase letters and
 numbers separated by single hyphens, with a maximum length of 20 characters.
 Spaces, underscores, consecutive hyphens, and descriptions made only of special
