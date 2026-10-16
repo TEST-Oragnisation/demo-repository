@@ -34,10 +34,12 @@ Descriptions are required and may contain uppercase or lowercase letters and
 numbers separated by single hyphens, with a maximum length of 20 characters.
 Spaces, underscores, consecutive hyphens, and descriptions made only of special
 characters are not allowed.
-Ticket IDs may only be used by one branch in this repository; the script checks
-both local and remote branches before creating one.
+Ticket IDs may only be used by one branch in this repository. The script checks
+current local and remote branches. Deleted branches and concurrent branch
+creation are not centrally tracked, so the ticket system remains the authority
+for uniqueness.
 
-On pull requests, the branch-name check fails if the branch name or PR target
-does not follow these conventions, or if the PR branch does not contain the
-latest commit from its required base branch. No branch naming check runs on
-pushes.
+On pull requests, the branch-name check validates the name format,
+description-length limit, and expected PR target. It does not check PR history
+for reused ticket IDs or require the PR branch to contain the latest target
+branch commit. No branch naming check runs on pushes.
