@@ -19,7 +19,8 @@ Create branches with `create-branch.sh`. Branch names use
 ```
 
 Descriptions may contain uppercase or lowercase letters, numbers, and
-hyphen-separated words.
+underscores. Single hyphens may separate words. A description must contain at
+least one letter or number and may not exceed 20 characters.
 
 Development branches use `develop` as their base and pull requests target
 `develop`. Supported types are `feature`, `bugfix`, `hotfix`, `chore`,
@@ -30,10 +31,10 @@ Branch-name validation is skipped when the PR source is an existing base branch
 (`main`, `develop`, or `iith`), allowing promotions such as `develop` to `main`
 without applying feature-branch naming rules. New branches still must follow
 the naming convention and target the correct base.
-Descriptions are required and may contain uppercase or lowercase letters and
-numbers separated by single hyphens, with a maximum length of 20 characters.
-Spaces, underscores, consecutive hyphens, and descriptions made only of special
-characters are not allowed.
+Descriptions are required and may contain uppercase or lowercase letters,
+numbers, and underscores, with single hyphens separating words and a maximum
+length of 20 characters. Spaces, consecutive hyphens, and descriptions made
+only of underscores or other non-alphanumeric characters are not allowed.
 Ticket IDs may only be used by one branch in this repository. The script checks
 current local and remote branches. Deleted branches and concurrent branch
 creation are not centrally tracked, so the ticket system remains the authority

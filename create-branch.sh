@@ -48,8 +48,13 @@ if [[ ! "$TICKET" =~ ^[0-9]+$ ]]; then
     exit 2
 fi
 
-if [[ ! "$DESCRIPTION" =~ ^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$ ]]; then
-    echo "Invalid description: use letters, numbers, and hyphens." >&2
+if [[ ! "$DESCRIPTION" =~ ^[A-Za-z0-9_]+(-[A-Za-z0-9_]+)*$ ]]; then
+    echo "Invalid description: use letters, numbers, underscores, and single hyphens." >&2
+    exit 2
+fi
+
+if [[ ! "$DESCRIPTION" =~ [A-Za-z0-9] ]]; then
+    echo "Invalid description: include at least one letter or number." >&2
     exit 2
 fi
 

@@ -21,14 +21,19 @@ jobs:
             exit 0
           fi
 
-          if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix|hotfix|chore|refactor|docs|spike)/[0-9]+-[A-Za-z0-9]+(-[A-Za-z0-9]+)*$ ]]; then
-            echo "::error::Invalid branch name '$BRANCH_NAME'. Expected <type>/<numeric-ticket-id>-<description> (letters, numbers, and hyphens)."
+          if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix|hotfix|chore|refactor|docs|spike)/[0-9]+-[A-Za-z0-9_]+(-[A-Za-z0-9_]+)*$ ]]; then
+            echo "::error::Invalid branch name '$BRANCH_NAME'. Expected <type>/<numeric-ticket-id>-<description> (letters, numbers, underscores, and single hyphens)."
             echo "::error::Allowed types: feature, bugfix, hotfix, chore, refactor, docs, spike."
             exit 1
           fi
 
           DESCRIPTION="${BRANCH_NAME#*/}"
           DESCRIPTION="${DESCRIPTION#*-}"
+          if [[ ! "$DESCRIPTION" =~ [A-Za-z0-9] ]]; then
+            echo "::error::Description in '$BRANCH_NAME' must contain at least one letter or number."
+            exit 1
+          fi
+
           if (( ${#DESCRIPTION} > 20 )); then
             echo "::error::Description in '$BRANCH_NAME' exceeds the 20-character maximum."
             exit 1
