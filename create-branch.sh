@@ -5,23 +5,29 @@ set -euo pipefail
 usage() {
     cat <<'EOF'
 Usage:
-  ./create-branch.sh <type> <ticket-id> <short-description> [--base <branch>]
+  ./create-branch.sh <type> <ticket-id> <short-description> --base <branch>
 
 Types:
   feature | bugfix | hotfix | chore | refactor | docs | spike
 
 Base rules for this repository:
-  Default: develop
   feature, bugfix, chore, refactor, docs, spike: develop
   hotfix: main (production)
 
 Examples:
-  ./create-branch.sh feature 142 po-approval-workflow
+  ./create-branch.sh feature 142 po-approval-workflow --base develop
   ./create-branch.sh hotfix 301 payment-advice-rounding --base main
 EOF
 }
 
-if [[ $# -ne 3 && $# -ne 5 ]] || { [[ $# -eq 5 ]] && [[ "$4" != "--base" ]]; }; then
+if [[ $# -ne 5 ]]; then
+    echo "WARNING: --base is required; no branch was created." >&2
+    usage >&2
+    exit 2
+fi
+
+if [[ "$4" != "--base" || -z "$5" ]]; then
+    echo "Invalid base argument: use --base <branch>; no branch was created." >&2
     usage >&2
     exit 2
 fi
@@ -29,10 +35,7 @@ fi
 TYPE="$1"
 TICKET="$2"
 DESCRIPTION="$3"
-BASE="develop"
-if [[ $# -eq 5 ]]; then
-    BASE="$5"
-fi
+BASE="$5"
 
 if [[ ! "$TYPE" =~ ^(feature|bugfix|hotfix|chore|refactor|docs|spike)$ ]]; then
     echo "Invalid type: $TYPE" >&2
@@ -78,22 +81,51 @@ fi
 
 BRANCH="$TYPE/$TICKET-$DESCRIPTION"
 
-if git -C "$REPO_ROOT" show-ref --verify --quiet "refs/heads/$BRANCH"; then
-    echo "Local branch already exists: $BRANCH" >&2
-    exit 1
-fi
-
 if ! git check-ref-format --branch "$BRANCH" >/dev/null; then
     echo "Generated branch name is not a valid Git branch name: $BRANCH" >&2
     exit 2
 fi
 
-if ! remote_branch="$(git -C "$REPO_ROOT" ls-remote --heads origin "refs/heads/$BRANCH")"; then
-    echo "Could not check whether origin/$BRANCH already exists." >&2
+if ! remote_branches="$(git -C "$REPO_ROOT" ls-remote --heads origin)"; then
+    echo "Could not check branches on origin; refusing to create a possibly duplicate branch." >&2
     exit 1
 fi
-if [[ -n "$remote_branch" ]]; then
-    echo "Remote branch already exists: origin/$BRANCH" >&2
+
+local_same_name="$(
+    git -C "$REPO_ROOT" for-each-ref --format='%(refname:short)' refs/heads |
+        grep -F -x -- "$BRANCH" || true
+)"
+remote_same_name="$(
+    printf '%s\n' "$remote_branches" |
+        awk '{ sub("refs/heads/", "", $2); print $2 }' |
+        grep -F -x -- "$BRANCH" || true
+)"
+
+if [[ -n "$local_same_name" || -n "$remote_same_name" ]]; then
+    echo "Branch name already exists; refusing to create duplicate '$BRANCH'." >&2
+    [[ -z "$local_same_name" ]] || echo "Local branch: $local_same_name" >&2
+    [[ -z "$remote_same_name" ]] || echo "Remote branch: origin/$remote_same_name" >&2
+    exit 1
+fi
+
+local_ticket_branch="$(
+    git -C "$REPO_ROOT" for-each-ref --format='%(refname:short)' refs/heads |
+        grep -E "^[^/]+/${TICKET}-" || true
+)"
+remote_ticket_branch="$(
+    printf '%s\n' "$remote_branches" |
+        awk '{ sub("refs/heads/", "", $2); print $2 }' |
+        grep -E "^[^/]+/${TICKET}-" || true
+)"
+
+if [[ -n "$local_ticket_branch" || -n "$remote_ticket_branch" ]]; then
+    echo "Ticket ID $TICKET is already used by an existing branch; refusing to create another branch for this ticket." >&2
+    if [[ -n "$local_ticket_branch" ]]; then
+        printf 'Local branch(es):\n%s\n' "$local_ticket_branch" >&2
+    fi
+    if [[ -n "$remote_ticket_branch" ]]; then
+        printf 'Remote branch(es):\n%s\n' "$remote_ticket_branch" >&2
+    fi
     exit 1
 fi
 
