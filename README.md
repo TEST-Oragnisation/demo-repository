@@ -19,6 +19,8 @@ as their base and pull requests target
 `refactor`, `docs`, and `spike`. Hotfix branches start from `main`, the
 production branch, and their pull requests target `main`. After a hotfix is
 merged and verified on `main`, forward-port it to `develop` if needed.
+The `develop` to `main` pull request is allowed as a promotion exception;
+all other development branches must target `develop`.
 Descriptions are required and may contain uppercase or lowercase letters and
 numbers separated by single hyphens, with a maximum length of 20 characters.
 Spaces, underscores, consecutive hyphens, and descriptions made only of special
