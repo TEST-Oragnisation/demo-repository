@@ -13,13 +13,14 @@ Create branches with `create-branch.sh`. Branch names use
 `<type>/<numeric-ticket-id>-<short-description>`:
 
 ```bash
-./create-branch.sh feature 142 po-approval-workflow
-./create-branch.sh feature 142 po-Approval-Workflow
-./create-branch.sh hotfix 301 payment-advice-rounding
+./create-branch.sh feature 142 po-approval-workflow --base develop
+./create-branch.sh feature 143 po-approval-workflow --base develop
+./create-branch.sh hotfix 301 payment-rounding --base main
 ```
 
 Descriptions may contain uppercase or lowercase letters, numbers, and
-hyphen-separated words.
+underscores. Single hyphens may separate words. A description must contain at
+least one letter or number and may not exceed 20 characters.
 
 Development branches use `develop` as their base and pull requests target
 `develop`. Supported types are `feature`, `bugfix`, `hotfix`, `chore`,
@@ -30,12 +31,16 @@ Branch-name validation is skipped when the PR source is an existing base branch
 (`main`, `develop`, or `iith`), allowing promotions such as `develop` to `main`
 without applying feature-branch naming rules. New branches still must follow
 the naming convention and target the correct base.
-Descriptions are required and may contain uppercase or lowercase letters and
-numbers separated by single hyphens, with a maximum length of 20 characters.
-Spaces, underscores, consecutive hyphens, and descriptions made only of special
-characters are not allowed.
-Ticket IDs may only be used by one branch in this repository; the script checks
-both local and remote branches before creating one.
+Descriptions are required and may contain uppercase or lowercase letters,
+numbers, and underscores, with single hyphens separating words and a maximum
+length of 20 characters. Spaces, consecutive hyphens, and descriptions made
+only of underscores or other non-alphanumeric characters are not allowed.
+Ticket IDs may only be used by one branch in this repository. The script checks
+current local and remote branches. Deleted branches and concurrent branch
+creation are not centrally tracked, so the ticket system remains the authority
+for uniqueness.
 
-On pull requests, the branch-name check fails if the branch name or PR target
-does not follow these conventions. No branch naming check runs on pushes.
+On pull requests, the branch-name check validates the name format,
+description-length limit, and expected PR target. It does not check PR history
+for reused ticket IDs or require the PR branch to contain the latest target
+branch commit. No branch naming check runs on pushes.

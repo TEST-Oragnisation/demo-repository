@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Abort creation of a new branch whose name breaks repository policy.
+# An existing branch has a non-zero old value, so commits and checkouts proceed.
+
+set -u
+
+state="${1:-}"
+if [[ "$state" != "preparing" && "$state" != "prepared" ]]; then
+    exit 0
+fi
+
+hook_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+validator="$hook_dir/../validate-branch-name.sh"
+status=0
+
+while IFS= read -r line || [[ -n "${line:-}" ]]; do
+    [[ -n "$line" ]] || continue
+    if [[ "$line" =~ ^(0+)[[:space:]]+[0-9a-fA-F]+[[:space:]]+(refs/heads/.+)$ ]]; then
+        short="${BASH_REMATCH[2]#refs/heads/}"
+        if [[ ! -f "$validator" ]]; then
+            echo "Branch name check is missing: $validator" >&2
+            status=1
+            continue
+        fi
+        if ! bash "$validator" "$short"; then
+            status=1
+        fi
+    fi
+done
+
+exit "$status"
